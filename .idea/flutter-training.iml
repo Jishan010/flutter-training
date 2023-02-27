@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/lectures/day-4-dart_langauge_tour/dart_demo/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/lectures/day-4-dart_langauge_tour/dart_demo/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/lectures/day-4-dart_langauge_tour/dart_demo/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lectures/dart-codec/jsondecoderapp/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lectures/dart-codec/jsondecoderapp/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/lectures/dart-codec/jsondecoderapp/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/lectures/day-5_overview_of_widgets/overview_widget/android/.gradle" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
