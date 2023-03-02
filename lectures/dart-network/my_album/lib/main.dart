@@ -4,6 +4,7 @@ import 'package:my_album/di/locator.dart';
 import 'package:my_album/repos/album_client.dart';
 import 'package:my_album/repos/album_services.dart';
 import 'package:my_album/repos/album_services_dio.dart';
+import 'package:my_album/repos/api_response.dart';
 import 'package:my_album/repos/photo.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -68,15 +69,24 @@ class _MyHomeState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: FutureBuilder<List<Photo>>(
-        future: _albumServicesDio.getPhotoes(),
+      body: FutureBuilder<ApiResponse<List<Photo>>>(
+        future: _albumServicesDio.getPhotoesafe(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
               child: Text('An error has occurred!'),
             );
           } else if (snapshot.hasData) {
-            return PhotosList(photos: snapshot.data!);
+            final response = snapshot.data!;
+            if (response is ApiResponseSuccess<List<Photo>>) {
+              return PhotosList(photos: response.payload);
+            } else if (response is ApiFailure<List<Photo>>) {
+              return Center(
+                child: Text(response.error.toString()),
+              );
+            } else {
+              return const Placeholder();
+            }
           } else {
             return const Center(
               child: CircularProgressIndicator(),
@@ -84,6 +94,22 @@ class _MyHomeState extends State<MyHomePage> {
           }
         },
       ),
+      // FutureBuilder<List<Photo>>(
+      //   future: _albumServicesDio.getPhotoes(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.hasError) {
+      //       return const Center(
+      //         child: Text('An error has occurred!'),
+      //       );
+      //     } else if (snapshot.hasData) {
+      //       return PhotosList(photos: snapshot.data!);
+      //     } else {
+      //       return const Center(
+      //         child: CircularProgressIndicator(),
+      //       );
+      //     }
+      //   },
+      // ),
     );
   }
 }

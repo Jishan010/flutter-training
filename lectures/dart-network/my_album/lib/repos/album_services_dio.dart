@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:my_album/repos/api_response.dart';
 import 'package:my_album/repos/photo.dart';
 
 class AlbumServicesDio {
@@ -9,57 +10,65 @@ class AlbumServicesDio {
   );
 
   Future<List<Photo>> getPhotoes() async {
+    final response = await _dio.get(
+      "/photos",
+    );
+    List<Photo> parseResponse(dynamic data) {
+      final parsed = data.cast<Map<String, dynamic>>();
+      return parsed
+          .map<Photo>(
+            (json) => Photo.fromJson(json),
+          )
+          .toList();
+    }
+
+    return compute(parseResponse, response.data);
+  }
+
+  Future<ApiResponse<List<Photo>>> getPhotoesafe() async {
     return safeApiCall(
       () async {
         final response = await _dio.get(
           "/photos",
         );
-        List<Photo> parseResponse(dynamic data) {
+        ApiResponse<List<Photo>> parseResponse(dynamic data) {
           final parsed = data.cast<Map<String, dynamic>>();
-          return parsed
-              .map<Photo>(
-                (json) => Photo.fromJson(json),
-              )
-              .toList();
+          // throw Exception("Dummy Exception");
+          return ApiResponseSuccess(
+            parsed
+                .map<Photo>(
+                  (json) => Photo.fromJson(json),
+                )
+                .toList(),
+          );
         }
+
         return compute(parseResponse, response.data);
       },
     );
   }
 }
 
-Future<T> safeApiCall<T>(Future<T> Function() apiCall) async {
+Future<ApiResponse<T>> safeApiCall<T>(
+    Future<ApiResponse<T>> Function() apiCall) async {
   try {
     return await apiCall();
-    // } on DioError catch (dioErr) {
-    //   switch (dioErr.type) {
-    //     case DioErrorType.connectionTimeout:
-    //       // TODO: Handle this case.
-    //       break;
-    //     case DioErrorType.sendTimeout:
-    //       // TODO: Handle this case.
-    //       break;
-    //     case DioErrorType.receiveTimeout:
-    //       // TODO: Handle this case.
-    //       break;
-    //     case DioErrorType.badCertificate:
-    //       // TODO: Handle this case.
-    //       break;
-    //     case DioErrorType.badResponse:
-    //       // TODO: Handle this case.
-    //       break;
-    //     case DioErrorType.cancel:
-    //       // TODO: Handle this case.
-    //       break;
-    //     case DioErrorType.connectionError:
-    //       // TODO: Handle this case.
-    //       break;
-    //     case DioErrorType.unknown:
-    //       // TODO: Handle this case.
-    //       break;
-    //   }
+  } on DioError catch (dioErr) {
+    switch (dioErr.type) {
+      case DioErrorType.connectionTimeout:
+      case DioErrorType.sendTimeout:
+      case DioErrorType.receiveTimeout:
+        return ApiFailure(ApiException(ApiExceptionType.timeOutException));
+      case DioErrorType.badCertificate:
+        return ApiFailure(ApiException(ApiExceptionType.authException));
+      case DioErrorType.badResponse:
+        return ApiFailure(ApiException(ApiExceptionType.badResponse));
+      case DioErrorType.cancel:
+      case DioErrorType.connectionError:
+      case DioErrorType.unknown:
+        return ApiFailure(ApiException(ApiExceptionType.unKnown));
+    }
   } catch (exc) {
-    // Todo: handle exception properly
-    throw Exception("No idea");
+    return ApiFailure(ApiException(ApiExceptionType.unKnown));
   }
 }
