@@ -1,0 +1,11 @@
+{
+  "@@locale": "ja",
+  "hello": "こんにちは",
+  "@hello": {
+    "description": "ごきげんよう!!"
+  },
+  "app_title": "Flutter デモのホームページ",
+  "@app_title": {
+    "description": "アプリケーションのタイトル。"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "@@locale": "es",
+  "hello": "Hola",
+  "@hello": {
+    "description": "¡¡Saludos!!"
+  },
+  "app_title": "Página de inicio de demostración de Flutter",
+  "@app_title": {
+    "description": "Título para la aplicación."
+  }
+}
